@@ -32,26 +32,28 @@ git clone https://github.com/GuangQianHui/tcp_simulation.git
 cd tcp_simulation
 ```
 
-2. 创建虚拟环境：
+2. 运行安装脚本：
 
 ```bash
 # Windows
-python -m venv venv
-.\venv\Scripts\activate
+python install.py
 
-# Linux/Mac
-python -m venv venv
-source venv/bin/activate
+# 激活虚拟环境
+.\venv\Scripts\activate
 ```
 
-3. 安装依赖：
+3. 或者手动安装：
 
 ```bash
-# 开发环境安装
-pip install -e ".[dev]"
+# 创建虚拟环境
+python -m venv venv
 
-# 或使用安装脚本
-python install.py
+# 激活虚拟环境
+.\venv\Scripts\activate  # Windows
+source venv/bin/activate  # Linux/Mac
+
+# 安装依赖
+pip install -e ".[dev]"
 ```
 
 ## 使用方法
