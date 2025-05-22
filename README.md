@@ -1,36 +1,38 @@
-# TCP 协议仿真项目
+# TCP 协议仿真工具
 
-本项目使用 Python 和 Scapy 库实现 TCP 协议的三次握手和四次挥手过程的仿真。项目采用面向对象设计，实现了多种设计模式，提供了灵活且可扩展的 TCP 协议仿真功能。
+一个基于 Python 和 Scapy 的 TCP 协议仿真工具，用于学习和研究 TCP 协议的工作原理。
 
-## 项目特点
+## 项目地址
 
-- 使用工厂模式创建 TCP 数据包
-- 使用状态模式管理 TCP 状态转换
-- 使用观察者模式处理数据包事件
-- 支持自定义 IP 地址、端口号等参数
-- 自动捕获和保存数据包
-- 详细的日志记录
+- GitHub: [https://github.com/GuangQianHui/tcp_simulation](https://github.com/GuangQianHui/tcp_simulation)
+- 作者: [GuangQianHui](https://github.com/GuangQianHui)
+
+## 功能特性
+
+- TCP 三次握手和四次挥手仿真
 - 完整的错误处理机制
-- 参数验证和类型检查
-- 运行环境检查
+- 详细的日志记录
+- 支持自定义参数配置
+- 自动化测试和代码质量检查
+- 使用设计模式（工厂、状态、观察者）实现
 
 ## 环境要求
 
 - Python 3.7+
-- Scapy >= 2.5.0
-- cryptography >= 41.0.0
-- Wireshark
+- Scapy 2.5.0+
+- cryptography 41.0.0+
+- typing-extensions 4.0.0+
 
-## 安装步骤
+## 安装方法
 
-1. 克隆项目到本地：
+1. 克隆仓库：
 
 ```bash
-git clone [项目地址]
-cd tcp-simulation
+git clone https://github.com/GuangQianHui/tcp_simulation.git
+cd tcp_simulation
 ```
 
-2. 创建并激活虚拟环境（推荐）：
+2. 创建虚拟环境：
 
 ```bash
 # Windows
@@ -38,135 +40,139 @@ python -m venv venv
 .\venv\Scripts\activate
 
 # Linux/Mac
-python3 -m venv venv
+python -m venv venv
 source venv/bin/activate
 ```
 
 3. 安装依赖：
 
 ```bash
-# 方法1：使用pip安装（推荐）
-pip install -e .
+# 开发环境安装
+pip install -e ".[dev]"
 
-# 方法2：直接运行Python模块
-python -m tcp_simulation
+# 或使用安装脚本
+python install.py
 ```
-
-4. 安装 Wireshark（如果尚未安装）：
-
-- Windows: 从[Wireshark 官网](https://www.wireshark.org/download.html)下载安装包
-- Linux: `sudo apt-get install wireshark`
 
 ## 使用方法
 
-1. 基本用法：
+1. 基本使用：
 
 ```bash
-# 方法1：使用安装的命令
-tcp-sim --src-ip 192.168.1.100 --dst-ip 192.168.1.101 --src-port 12345 --dst-port 80
+# 使用默认配置运行
+tcp-sim
 
-# 方法2：直接运行Python模块
-python -m tcp_simulation --src-ip 192.168.1.100 --dst-ip 192.168.1.101 --src-port 12345 --dst-port 80
+# 或直接运行 Python 模块
+python -m tcp_simulation
 ```
 
-2. 命令行参数说明：
+2. 自定义参数：
 
-- `--src-ip`: 源 IP 地址（必需）
-- `--dst-ip`: 目标 IP 地址（必需）
-- `--src-port`: 源端口号（必需）
-- `--dst-port`: 目标端口号（必需）
-- `--interface`: 网络接口名称（可选）
-- `--delay`: 数据包发送延迟（秒），默认 1.0
-- `--no-save`: 不保存 pcap 文件
-- `--debug`: 启用调试模式
+```bash
+tcp-sim --src-ip 192.168.1.100 --dst-ip 192.168.1.101 --src-port 12345 --dst-port 80 --debug
+```
 
-## 错误处理
+## 项目结构
 
-程序包含完整的错误处理机制，主要处理以下几类错误：
+```
+tcp-simulation/
+├── .github/
+│   └── workflows/
+│       └── ci.yml                 # GitHub Actions 工作流配置
+├── tcp_simulation/
+│   ├── __init__.py
+│   ├── __main__.py               # 主程序入口
+│   ├── core/
+│   │   ├── __init__.py
+│   │   ├── tcp_simulation.py     # TCP 仿真核心类
+│   │   ├── packet_factory.py     # 数据包工厂类
+│   │   └── tcp_state.py          # TCP 状态类
+│   └── utils/
+│       ├── __init__.py
+│       ├── error_handler.py      # 错误处理模块
+│       ├── packet_analyzer.py    # 数据包分析器
+│       └── observers.py          # 观察者模式实现
+├── tests/                        # 测试目录
+├── .gitignore                    # Git 忽略文件
+├── .pre-commit-config.yaml       # 预提交钩子配置
+├── CODE_OF_CONDUCT.md           # 行为准则
+├── CONTRIBUTING.md              # 贡献指南
+├── LICENSE                      # MIT 许可证
+├── README.md                    # 项目说明文档
+├── SECURITY.md                  # 安全策略
+├── install.py                   # 安装脚本
+├── requirements.txt             # 依赖包列表
+└── setup.py                     # 包安装配置
+```
 
-1. 配置错误（ConfigurationError）：
+## 核心组件
 
-   - 无效的 IP 地址
-   - 无效的端口号
-   - 无效的延迟时间
-   - 不支持的参数组合
+### PacketFactory
 
-2. 权限错误（PermissionError）：
+负责创建各种 TCP 数据包，使用工厂模式实现。
 
-   - 缺少管理员/root 权限
-   - 文件系统权限不足
+### TCPState
 
-3. 网络错误（NetworkError）：
+管理 TCP 连接状态，使用状态模式实现。
 
-   - 网络接口不可用
-   - 数据包发送失败
-   - 连接超时
+### Observers
 
-4. 数据包错误（PacketError）：
-   - 数据包构造失败
-   - 数据包解析错误
+实现观察者模式，用于日志记录、数据包捕获和分析。
 
-## 日志记录
+## 测试
 
-程序提供详细的日志记录功能：
+运行测试：
 
-1. 日志级别：
-
-   - DEBUG：详细的调试信息
-   - INFO：常规操作信息
-   - WARNING：警告信息
-   - ERROR：错误信息
-
-2. 日志输出：
-
-   - 控制台输出：实时显示程序运行状态
-   - 文件记录：保存在 `logs/tcp_simulation.log`
-
-3. 日志内容：
-   - 时间戳
-   - 日志级别
-   - 模块名称
-   - 详细信息
+```bash
+pytest tests/
+```
 
 ## 注意事项
 
-1. 依赖版本要求：
+1. 需要管理员/root 权限运行
+2. 需要安装 Wireshark 进行数据包分析
+3. 建议在测试环境中运行
+4. 不要在生产环境中使用
 
-   - Scapy >= 2.5.0
-   - cryptography >= 41.0.0
-   - Python >= 3.7
+## 日志说明
 
-2. 可能出现的警告：
+日志文件位于 `logs/` 目录下：
 
-   - 如果看到 cryptography 相关的废弃警告，请确保已安装最新版本的 cryptography 包
-   - 这些警告不会影响程序的正常运行
+- `tcp_simulation.log`: 主日志文件
+- `packet_capture.log`: 数据包捕获日志
+- `error.log`: 错误日志
 
-3. 运行环境：
+## 开发指南
 
-   - 建议在虚拟环境中运行程序
-   - 需要管理员/root 权限
-   - 确保防火墙不会阻止程序运行
-   - 建议在测试环境中运行，避免影响生产网络
+1. 添加新的 TCP 状态：
 
-4. 性能考虑：
-   - 数据包发送延迟默认设置为 1 秒，可以根据需要调整
-   - 大量数据包捕获可能会占用较多磁盘空间
-   - 建议定期清理日志文件
+   - 在 `tcp_simulation/core/tcp_state.py` 中创建新的状态类
+   - 实现必要的方法
+   - 在 `TCPSimulation` 类中集成新状态
 
-## 开发说明
+2. 添加新的观察者：
+   - 在 `tcp_simulation/utils/observers.py` 中创建新的观察者类
+   - 实现 `update` 方法
+   - 在 `TCPSimulation` 类中注册新观察者
 
-### 添加新的错误类型
+## 贡献指南
 
-1. 在 `error_handler.py` 中定义新的异常类
-2. 在 `handle_error` 函数中添加对应的错误消息
-3. 在适当的地方抛出新的异常
+欢迎提交 Issue 和 Pull Request。详见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
-### 添加新的日志记录
+## 行为准则
 
-1. 使用 `setup_logging` 函数获取日志记录器
-2. 使用适当的日志级别记录信息
-3. 确保日志消息清晰且有意义
+请参阅 [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)。
+
+## 安全策略
+
+请参阅 [SECURITY.md](SECURITY.md)。
 
 ## 许可证
 
-MIT License
+本项目采用 MIT 许可证。详见 [LICENSE](LICENSE) 文件。
+
+## 联系方式
+
+- 作者: GuangQianHui
+- GitHub: [https://github.com/GuangQianHui](https://github.com/GuangQianHui)
+- 邮箱: xuqiguang9@gmail.com
